@@ -1,24 +1,21 @@
-#include "philosophers.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   thread_activity.c                                  :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lwray <lwray@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2021/09/04 16:33:06 by lwray         #+#    #+#                 */
+/*   Updated: 2021/09/04 16:33:08 by lwray         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
-// void	take_left_fork(t_data *data, int number)
-// {
-// 	pthread_mutex_lock(&data->forks[number - 1]);
-// 	print_status(TAKEN_FORK, number, data);
-// }
+#include "../includes/philosophers.h"
 
-// void	take_right_fork(t_data *data, int number)
-// {
-// 	if (number == data->philosophers)
-// 		pthread_mutex_lock(&data->forks[0]);
-// 	else
-// 		pthread_mutex_lock(&data->forks[number]);
-// 	print_status(TAKEN_FORK, number, data);
-// }
-
-bool	try_left(t_data *data, int number)
+static bool	try_left(t_data *data, int number)
 {
-	// if (data->shutdown)
-	// 	return (false);
+	if (data->shutdown)
+		return (false);
 	pthread_mutex_lock(&data->forks[number - 1]);
 	if (data->fork_taken[number - 1] == false)
 	{
@@ -31,28 +28,31 @@ bool	try_left(t_data *data, int number)
 	return (false);
 }
 
-bool	try_right(t_data *data, int number)
+static bool	try_right(t_data *data, int number)
 {
-	// if (data->shutdown)
-	// 	return (false);
+	int	fork_index;
+
+	if (data->shutdown)
+		return (false);
+	fork_index = number;
 	if (number == data->philosophers)
-		number = 0;
-	pthread_mutex_lock(&data->forks[number]);
-	if (data->fork_taken[number] == false)
+		fork_index = 0;
+	pthread_mutex_lock(&data->forks[fork_index]);
+	if (data->fork_taken[fork_index] == false)
 	{
-		data->fork_taken[number] = true;
+		data->fork_taken[fork_index] = true;
 		print_status(TAKEN_FORK, number, data);
-		pthread_mutex_unlock(&data->forks[number]);
+		pthread_mutex_unlock(&data->forks[fork_index]);
 		return (true);
 	}
-	pthread_mutex_unlock(&data->forks[number]);
+	pthread_mutex_unlock(&data->forks[fork_index]);
 	return (false);
 }
 
-void	release_forks(t_data *data, int number)
+static void	release_forks(t_data *data, int number)
 {
-	// if (data->shutdown)
-	// 	return ;
+	if (data->shutdown)
+		return ;
 	pthread_mutex_lock(&data->forks[number - 1]);
 	data->fork_taken[number - 1] = false;
 	pthread_mutex_unlock(&data->forks[number - 1]);
@@ -63,10 +63,10 @@ void	release_forks(t_data *data, int number)
 	pthread_mutex_unlock(&data->forks[number]);
 }
 
-int	eating(t_philo *philo, t_data *data, int number)
+static int	eating(t_philo *philo, t_data *data, int number)
 {
-	bool left;
-	bool right;
+	bool	left;
+	bool	right;
 
 	left = false;
 	right = false;
@@ -89,36 +89,6 @@ int	eating(t_philo *philo, t_data *data, int number)
 	return (0);
 }
 
-// void	eating(t_philo *philo, t_data *data, int number)
-// {
-// 	if (1)
-// 	{
-// 		take_right_fork(data, number);
-// 		take_left_fork(data, number);
-// 	}
-// 	else
-// 	{
-// 		take_left_fork(data, number);
-// 		take_right_fork(data, number);
-// 	}
-// 	philo->time_of_death = get_time() + data->time_to_die;
-// 	print_status(EATING, number, data);
-// 	ft_sleep(data->time_to_eat);
-// 	if (data->meals != -1)
-// 		philo->meals_eaten++;
-// 	if (number == data->philosophers)
-// 		pthread_mutex_unlock(&data->forks[0]);
-// 	else
-// 		pthread_mutex_unlock(&data->forks[number]);
-// 	pthread_mutex_unlock(&data->forks[number - 1]);
-// }
-
-void	sleeping(t_data *data, int number)
-{
-	print_status(SLEEPING, number, data);
-	ft_sleep(data->time_to_sleep);
-}
-
 void	*create_thread(void *copy)
 {
 	int				number;
@@ -135,7 +105,8 @@ void	*create_thread(void *copy)
 	{
 		if (eating(philo, philo->data, number))
 			return (NULL);
-		sleeping(philo->data, number);
+		print_status(SLEEPING, number, philo->data);
+		ft_sleep(philo->data->time_to_sleep);
 		print_status(THINKING, number, philo->data);
 	}
 	return (NULL);

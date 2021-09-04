@@ -11,15 +11,16 @@
 # **************************************************************************** #
 
 NAME := philo
-HEADERFILES :=	srcs/philosophers.h
+HEADERFILES :=	includes/philosophers.h
 SRCS :=			srcs/philosophers.c \
 				srcs/parsing.c \
 				srcs/create_forks.c \
 				srcs/thread_activity.c \
 				srcs/print.c \
-				srcs/get_time.c \
+				srcs/timing.c \
 				srcs/monitoring.c \
-				srcs/cleanup.c
+				srcs/cleanup.c \
+				srcs/error_handler.c
 
 FLAGS := -Wall -Wextra -Werror
 OBJFILES := $(SRCS:srcs/%.c=obj/%.o)
@@ -43,6 +44,5 @@ re: fclean all
 
 norm:
 	norminette $(SRCS) $(HEADERFILES)
-	make norm -C $(LIBFT)
 
-.PHONY: all clean fclean re norm bonus
+.PHONY: all clean fclean re norm

@@ -1,4 +1,16 @@
-#include "philosophers.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   print.c                                            :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lwray <lwray@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2021/09/04 16:32:31 by lwray         #+#    #+#                 */
+/*   Updated: 2021/09/04 16:32:33 by lwray         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/philosophers.h"
 
 int	print_error(char *str)
 {
@@ -12,18 +24,15 @@ int	print_error(char *str)
 
 int	mutex_print(t_data *data)
 {
-	pthread_mutex_t stdout_lock;
+	pthread_mutex_t	stdout_lock;
 
 	if (pthread_mutex_init(&stdout_lock, DEFAULT_ATTRIBUTE))
-	{
-		print_error("Error :");
 		return (EXIT_FAILURE);
-	}
 	data->stdout_lock = stdout_lock;
 	return (EXIT_SUCCESS);
 }
 
-int	ft_strequal(char *s1, char *s2)
+static int	ft_strequal(char *s1, char *s2)
 {
 	while (*s1 == *s2 && *s1 != '\0')
 	{
@@ -37,7 +46,7 @@ int	ft_strequal(char *s1, char *s2)
 
 void	print_status(char *status, int number, t_data *data)
 {
-	static bool death_occured = false;
+	static bool	death_occured = false;
 
 	pthread_mutex_lock(&data->stdout_lock);
 	if (!death_occured)

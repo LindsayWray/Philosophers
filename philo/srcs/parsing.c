@@ -1,23 +1,20 @@
-#include "philosophers.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   parsing.c                                          :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lwray <lwray@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2021/09/04 16:32:23 by lwray         #+#    #+#                 */
+/*   Updated: 2021/09/04 16:32:26 by lwray         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
-int	check_time(t_data *data)
-{
-	if (data->philosophers < 1)
-	{
-		print_error("Must be at least one philosopher: ");
-		return (EXIT_FAILURE);
-	}
-	// if (time->time_to_die == 0 || time->time_to_eat == 0)
-	// {
-	// 	print_error("0ms is too little time", STDERR_FILENO);
-	// 	return (0);
-	// }
-	return (EXIT_SUCCESS);
-}
+#include "../includes/philosophers.h"
 
-void	assign_input(int *input, int argc, t_data *data)
+static void	assign_input(int *input, int argc, t_data *data)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	data->philosophers = input[0];
@@ -31,7 +28,7 @@ void	assign_input(int *input, int argc, t_data *data)
 	data->shutdown = false;
 }
 
-int	ft_atoi(char *str)
+static int	ft_atoi(char *str)
 {
 	long	number;
 
@@ -40,7 +37,7 @@ int	ft_atoi(char *str)
 	if (*str == '-')
 	{
 		print_error("Negative input is invalid: ");
-		return(-1);
+		return (-1);
 	}
 	number = 0;
 	while (*str >= '0' && *str <= '9')
@@ -70,5 +67,10 @@ int	parsing(int argc, char **argv, t_data *data)
 		i++;
 	}
 	assign_input(input, argc, data);
-	return (check_time(data));
+	if (data->philosophers < 1)
+	{
+		print_error("Must be at least one philosopher: ");
+		return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
 }

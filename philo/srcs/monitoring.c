@@ -1,9 +1,20 @@
-#include "philosophers.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   monitoring.c                                       :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lwray <lwray@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2021/09/04 16:32:53 by lwray         #+#    #+#                 */
+/*   Updated: 2021/09/04 16:32:56 by lwray         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "../includes/philosophers.h"
 
-void	shutdown_threads(pthread_t *threads, int philosophers)
+static void	shutdown_threads(pthread_t *threads, int philosophers)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < philosophers)
@@ -13,9 +24,9 @@ void	shutdown_threads(pthread_t *threads, int philosophers)
 	}
 }
 
-int		monitor_meals(t_philo *philo, int philosophers, pthread_t *threads)
+static int	monitor_meals(t_philo *philo, int philosophers, pthread_t *threads)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < philosophers)
@@ -31,10 +42,10 @@ int		monitor_meals(t_philo *philo, int philosophers, pthread_t *threads)
 	return (1);
 }
 
-void 	death_monitor(t_philo *philo, int philosophers, pthread_t *threads)
+void	death_monitor(t_philo *philo, int philosophers, pthread_t *threads)
 {
-	long current_time;
-	int	i;
+	long	current_time;
+	int		i;
 
 	while (INFINITE_LOOP)
 	{
@@ -46,7 +57,7 @@ void 	death_monitor(t_philo *philo, int philosophers, pthread_t *threads)
 			{
 				print_status(DIED, (i + 1), philo[i].data);
 				philo->data->shutdown = true;
-				usleep(500);
+				usleep(100);
 				shutdown_threads(threads, philosophers);
 				final_cleanup(philo, threads);
 				return ;
